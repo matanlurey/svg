@@ -1,6 +1,10 @@
 name: svg
+author: Matan Lurey <matanl@google.com>
+description: A pure-dart implementation of an SVG parser.
+homepage: https://github.com/matanlurey/svg
+version: 0.0.1
 dependencies:
-  petitparser: any
-  quiver: any
+  petitparser: ">=1.4.3 <2.0.0"
+  quiver: ">=0.21.4 <0.22.0"
 dev_dependencies:
   test: any

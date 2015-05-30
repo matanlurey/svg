@@ -2,7 +2,6 @@ library svg.src.parser;
 
 import 'dart:math';
 
-import 'package:petitparser/petitparser.dart';
 import 'package:svg/src/command.dart';
 import 'package:svg/src/grammar.dart';
 import 'package:quiver/iterables.dart';

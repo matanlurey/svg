@@ -2,6 +2,7 @@ library svg.test.parser_test;
 
 import 'dart:math';
 
+import 'package:svg/svg.dart' as svg;
 import 'package:svg/src/command.dart';
 import 'package:svg/src/parser.dart';
 import 'package:test/test.dart';
@@ -214,5 +215,14 @@ void main() {
         ]);
       });
     });
+  });
+
+  test('parseSvgPath works as intended', () {
+    expect(svg.parseSvgPath('M0,15,L15,15L7.5,0z'), [
+      const MoveToPathCommand(const Point(0, 15)),
+      const LineToPathCommand(const Point(15, 15)),
+      const LineToPathCommand(const Point(7.5, 0)),
+      const CloseCommand()
+    ]);
   });
 }
