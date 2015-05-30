@@ -1,0 +1,6 @@
+name: svg
+dependencies:
+  petitparser: any
+  quiver: any
+dev_dependencies:
+  test: any
