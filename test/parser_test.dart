@@ -99,20 +99,20 @@ void main() {
       test('can parse a single line', () {
         expect(
             parseLine('l5,5').value,
-            [const LineToPathCommand(const Point(5, 5))]);
+            [const SvgPathLineSegment(5, 5)]);
       });
 
       test('can parse a single line with fractional values', () {
         expect(
             parseLine('l1.2,3').value,
-            [const LineToPathCommand(const Point(1.2, 3))]);
+            [const SvgPathLineSegment(1.2, 3)]);
       });
 
       test('can parse multiple line values', () {
         expect(
             parseLine('l1,1,2,2').value, [
-              const LineToPathCommand(const Point(1, 1)),
-              const LineToPathCommand(const Point(2, 2))
+              const SvgPathLineSegment(1, 1),
+              const SvgPathLineSegment(2, 2)
             ]);
       });
     });
@@ -125,15 +125,15 @@ void main() {
       test('can parse a simple command', () {
         expect(
             parseMove('m5,5').value,
-            [const MoveToPathCommand(const Point(5, 5))]);
+            [const SvgPathMoveSegment(5, 5)]);
       });
 
       test('can parse followed by additional moves', () {
         expect(
             parseMove('m0,0,5,5').value,
             [
-              const MoveToPathCommand(const Point(0, 0)),
-              const MoveToPathCommand(const Point(5, 5))
+              const SvgPathMoveSegment(0, 0),
+              const SvgPathMoveSegment(5, 5)
             ]);
       });
     });
@@ -144,12 +144,12 @@ void main() {
           .parse;
 
       test('can parse a close path', () {
-        expect(parseDraw('z').value, [const CloseCommand()]);
+        expect(parseDraw('z').value, [const SvgPathClose()]);
       });
 
       test('can parse a line to', () {
         expect(parseDraw('l5,5').value, [
-          const LineToPathCommand(const Point(5, 5))
+          const SvgPathLineSegment(5, 5)
         ]);
       });
     });
@@ -161,17 +161,17 @@ void main() {
 
       test('can parse multiple lines, then a close', () {
         expect(parseDraws('L15,15L14,14z').value, [
-          const LineToPathCommand(const Point(15, 15)),
-          const LineToPathCommand(const Point(14, 14)),
-          const CloseCommand()
+          const SvgPathLineSegment(15, 15),
+          const SvgPathLineSegment(14, 14),
+          const SvgPathClose()
         ]);
       });
 
       test('can parse multiple lines with fractional values', () {
         expect(parseDraws('L5.5,4.4L3.3,2.2z').value, [
-          const LineToPathCommand(const Point(5.5, 4.4)),
-          const LineToPathCommand(const Point(3.3, 2.2)),
-          const CloseCommand()
+          const SvgPathLineSegment(5.5, 4.4),
+          const SvgPathLineSegment(3.3, 2.2),
+          const SvgPathClose()
         ]);
       });
     });
@@ -184,18 +184,18 @@ void main() {
       test('can parse a move/draw command', () {
         expect(
             parseDraw('M1,2L3,4').value,
-            [
-              const MoveToPathCommand(const Point(1, 2)),
-              const LineToPathCommand(const Point(3, 4))
+            const [
+              const SvgPathMoveSegment(1, 2),
+              const SvgPathLineSegment(3, 4)
             ]);
       });
 
       test('can parse a move/draw command with a comma in between', () {
         expect(
             parseDraw('M1,2,L3,4').value,
-            [
-              const MoveToPathCommand(const Point(1, 2)),
-              const LineToPathCommand(const Point(3, 4))
+            const [
+              const SvgPathMoveSegment(1, 2),
+              const SvgPathLineSegment(3, 4)
             ]);
       });
     });
@@ -207,22 +207,22 @@ void main() {
 
       test('can parse a path', () {
         // This is a shape path for drawing an up-arrow :)
-        expect(parseSvgPath('M0,15,L15,15L7.5,0z').value, [
-          const MoveToPathCommand(const Point(0, 15)),
-          const LineToPathCommand(const Point(15, 15)),
-          const LineToPathCommand(const Point(7.5, 0)),
-          const CloseCommand()
+        expect(parseSvgPath('M0,15,L15,15L7.5,0z').value, const [
+          const SvgPathMoveSegment(0, 15),
+          const SvgPathLineSegment(15, 15),
+          const SvgPathLineSegment(7.5, 0),
+          const SvgPathClose()
         ]);
       });
     });
   });
 
   test('parseSvgPath works as intended', () {
-    expect(svg.parseSvgPath('M0,15,L15,15L7.5,0z'), [
-      const MoveToPathCommand(const Point(0, 15)),
-      const LineToPathCommand(const Point(15, 15)),
-      const LineToPathCommand(const Point(7.5, 0)),
-      const CloseCommand()
+    expect(svg.parseSvgPath('M0,15,L15,15L7.5,0z'), const [
+      const SvgPathMoveSegment(0, 15),
+      const SvgPathLineSegment(15, 15),
+      const SvgPathLineSegment(7.5, 0),
+      const SvgPathClose()
     ]);
   });
 }

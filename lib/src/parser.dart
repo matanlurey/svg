@@ -24,19 +24,20 @@ class SvgParserDefinition extends SvgGrammarDefinition {
   });
 
   @override
-  closePath() => super.closePath().map((_) => const [const CloseCommand()]);
+  closePath() => super.closePath().map((_) => const [const SvgPathClose()]);
 
   @override
   moveTo() => super.moveTo().map((List result) {
     // Single move.
     if (result[2] is Point) {
-      return [new MoveToPathCommand((result[2]))];
+      Point point = result[2];
+      return [new SvgPathMoveSegment(point.x, point.y)];
     }
 
     // Multiple move.
     if (result[2] is Iterable) {
-      return (result[2] as Iterable).where((e) => e is Point).map((p) {
-        return new MoveToPathCommand(p);
+      return (result[2] as Iterable).where((e) => e is Point).map((Point p) {
+        return new SvgPathMoveSegment(p.x, p.y);
       });
     }
   });
@@ -45,13 +46,14 @@ class SvgParserDefinition extends SvgGrammarDefinition {
   lineTo() => super.lineTo().map((List result) {
     // Single line.
     if (result[2] is Point) {
-      return [new LineToPathCommand((result[2]))];
+      Point point = result[2];
+      return [new SvgPathLineSegment(point.x, point.y)];
     }
 
     // Multiple lines.
     if (result[2] is Iterable) {
-      return (result[2] as Iterable).where((e) => e is Point).map((p) {
-        return new LineToPathCommand(p);
+      return (result[2] as Iterable).where((e) => e is Point).map((Point p) {
+        return new SvgPathLineSegment(p.x, p.y);
       }).toList(growable: false);
     }
   });
