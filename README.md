@@ -1,6 +1,8 @@
 SVG
 ===
 
+[![Build Status](https://drone.io/github.com/matanlurey/svg/status.png)](https://drone.io/github.com/matanlurey/svg/latest)
+
 A pure-dart implementation of an SVG parser. The end goal of this package is to
 provide a semi-full featured implementation that is able to run in both the
 browser and on the server (or command line tooling).
