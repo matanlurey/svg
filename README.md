@@ -27,7 +27,27 @@ void main() {
 }
 ```
 
+### Generating Dart code
+
+Don't want to ship the SVG parser with your client? You can statically analyze
+SVG files and generate raw Dart code instead!
+
+```dart
+svgPathToSource('M0,15,L15,15L7.5,0z')
+
+// Outputs
+/*
+ 'const <SvgPathSegment> ['
+   'const SvgPathMoveSegment(0, 15), '
+   'const SvgPathLineSegment(15, 15), '
+   'const SvgPathLineSegment(7.5, 0), '
+   'const SvgPathClose()'
+ ']'
+*/
+```
+
 Currently supported
 ---
 
 - Parsing a single SVG path that contains move, line, and close commands.
+- Converting a single SVG path to raw Dart (generated) code.

@@ -3,6 +3,7 @@ library svg;
 import 'package:petitparser/petitparser.dart';
 import 'package:svg/src/command.dart';
 export 'package:svg/src/command.dart';
+export 'package:svg/src/emitter.dart' show svgPathToSource;
 import 'package:svg/src/parser.dart';
 import 'package:quiver/iterables.dart';
 
