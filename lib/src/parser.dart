@@ -28,32 +28,36 @@ class SvgParserDefinition extends SvgGrammarDefinition {
 
   @override
   moveTo() => super.moveTo().map((List result) {
+    var isRelative = result[0] == 'm';
+
     // Single move.
     if (result[2] is Point) {
       Point point = result[2];
-      return [new SvgPathMoveSegment(point.x, point.y)];
+      return [new SvgPathMoveSegment(point.x, point.y, isRelative: isRelative)];
     }
 
     // Multiple move.
     if (result[2] is Iterable) {
       return (result[2] as Iterable).where((e) => e is Point).map((Point p) {
-        return new SvgPathMoveSegment(p.x, p.y);
+        return new SvgPathMoveSegment(p.x, p.y, isRelative: isRelative);
       });
     }
   });
 
   @override
   lineTo() => super.lineTo().map((List result) {
+    var isRelative = result[0] == 'l';
+
     // Single line.
     if (result[2] is Point) {
       Point point = result[2];
-      return [new SvgPathLineSegment(point.x, point.y)];
+      return [new SvgPathLineSegment(point.x, point.y, isRelative: isRelative)];
     }
 
     // Multiple lines.
     if (result[2] is Iterable) {
       return (result[2] as Iterable).where((e) => e is Point).map((Point p) {
-        return new SvgPathLineSegment(p.x, p.y);
+        return new SvgPathLineSegment(p.x, p.y, isRelative: isRelative);
       }).toList(growable: false);
     }
   });

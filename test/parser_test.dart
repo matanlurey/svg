@@ -99,20 +99,20 @@ void main() {
       test('can parse a single line', () {
         expect(
             parseLine('l5,5').value,
-            [const SvgPathLineSegment(5, 5)]);
+            [const SvgPathLineSegment(5, 5, isRelative: true)]);
       });
 
       test('can parse a single line with fractional values', () {
         expect(
             parseLine('l1.2,3').value,
-            [const SvgPathLineSegment(1.2, 3)]);
+            [const SvgPathLineSegment(1.2, 3, isRelative: true)]);
       });
 
       test('can parse multiple line values', () {
         expect(
             parseLine('l1,1,2,2').value, [
-              const SvgPathLineSegment(1, 1),
-              const SvgPathLineSegment(2, 2)
+              const SvgPathLineSegment(1, 1, isRelative: true),
+              const SvgPathLineSegment(2, 2, isRelative: true)
             ]);
       });
     });
@@ -125,15 +125,15 @@ void main() {
       test('can parse a simple command', () {
         expect(
             parseMove('m5,5').value,
-            [const SvgPathMoveSegment(5, 5)]);
+            [const SvgPathMoveSegment(5, 5, isRelative: true)]);
       });
 
       test('can parse followed by additional moves', () {
         expect(
             parseMove('m0,0,5,5').value,
             [
-              const SvgPathMoveSegment(0, 0),
-              const SvgPathMoveSegment(5, 5)
+              const SvgPathMoveSegment(0, 0, isRelative: true),
+              const SvgPathMoveSegment(5, 5, isRelative: true)
             ]);
       });
     });
@@ -149,7 +149,7 @@ void main() {
 
       test('can parse a line to', () {
         expect(parseDraw('l5,5').value, [
-          const SvgPathLineSegment(5, 5)
+          const SvgPathLineSegment(5, 5, isRelative: true)
         ]);
       });
     });
@@ -161,16 +161,16 @@ void main() {
 
       test('can parse multiple lines, then a close', () {
         expect(parseDraws('L15,15L14,14z').value, [
-          const SvgPathLineSegment(15, 15),
-          const SvgPathLineSegment(14, 14),
+          const SvgPathLineSegment(15, 15, isRelative: false),
+          const SvgPathLineSegment(14, 14, isRelative: false),
           const SvgPathClose()
         ]);
       });
 
       test('can parse multiple lines with fractional values', () {
         expect(parseDraws('L5.5,4.4L3.3,2.2z').value, [
-          const SvgPathLineSegment(5.5, 4.4),
-          const SvgPathLineSegment(3.3, 2.2),
+          const SvgPathLineSegment(5.5, 4.4, isRelative: false),
+          const SvgPathLineSegment(3.3, 2.2, isRelative: false),
           const SvgPathClose()
         ]);
       });
@@ -185,8 +185,8 @@ void main() {
         expect(
             parseDraw('M1,2L3,4').value,
             const [
-              const SvgPathMoveSegment(1, 2),
-              const SvgPathLineSegment(3, 4)
+              const SvgPathMoveSegment(1, 2, isRelative: false),
+              const SvgPathLineSegment(3, 4, isRelative: false)
             ]);
       });
 
@@ -194,8 +194,8 @@ void main() {
         expect(
             parseDraw('M1,2,L3,4').value,
             const [
-              const SvgPathMoveSegment(1, 2),
-              const SvgPathLineSegment(3, 4)
+              const SvgPathMoveSegment(1, 2, isRelative: false),
+              const SvgPathLineSegment(3, 4, isRelative: false)
             ]);
       });
     });
@@ -208,9 +208,9 @@ void main() {
       test('can parse a path', () {
         // This is a shape path for drawing an up-arrow :)
         expect(parseSvgPath('M0,15,L15,15L7.5,0z').value, const [
-          const SvgPathMoveSegment(0, 15),
-          const SvgPathLineSegment(15, 15),
-          const SvgPathLineSegment(7.5, 0),
+          const SvgPathMoveSegment(0, 15, isRelative: false),
+          const SvgPathLineSegment(15, 15, isRelative: false),
+          const SvgPathLineSegment(7.5, 0, isRelative: false),
           const SvgPathClose()
         ]);
       });
@@ -219,9 +219,9 @@ void main() {
 
   test('parseSvgPath works as intended', () {
     expect(svg.parseSvgPath('M0,15,L15,15L7.5,0z'), const [
-      const SvgPathMoveSegment(0, 15),
-      const SvgPathLineSegment(15, 15),
-      const SvgPathLineSegment(7.5, 0),
+      const SvgPathMoveSegment(0, 15, isRelative: false),
+      const SvgPathLineSegment(15, 15, isRelative: false),
+      const SvgPathLineSegment(7.5, 0, isRelative: false),
       const SvgPathClose()
     ]);
   });
