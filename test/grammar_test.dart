@@ -227,6 +227,380 @@ void main() {
       });
     });
 
+    group('Horizontal line to', () {
+      final parseHorizontalLine = definition.build(
+          start: definition.horizontalLineTo)
+          .parse;
+
+      test('can parse a single line', () {
+        expect(
+            parseHorizontalLine('H5').value,
+            ['H', [], [null, '5']]);
+      });
+
+      test('can parse a single line with fractional values', () {
+        expect(parseHorizontalLine('h1.2').value, [
+          'h', [], [null, [['1', '.', '2'], null]]
+        ]);
+      });
+
+      test('can parse multiple line values', () {
+        expect(parseHorizontalLine('h1,2').value, [
+          'h',
+          [],
+          [
+            [null, '1'],
+            [',', []],
+            [null, '2']
+          ]
+        ]);
+      });
+    });
+
+    group('Vertical line to', () {
+      final parseVerticalLine = definition.build(
+          start: definition.verticalLineTo)
+          .parse;
+
+      test('can parse a single line', () {
+        expect(
+            parseVerticalLine('V5').value,
+            ['V', [], [null, '5']]);
+      });
+
+      test('can parse a single line with fractional values', () {
+        expect(parseVerticalLine('v1.2').value, [
+          'v', [], [null, [['1', '.', '2'], null]]
+        ]);
+      });
+
+      test('can parse multiple line values', () {
+        expect(parseVerticalLine('v1,2').value, [
+          'v',
+          [],
+          [
+            [null, '1'],
+            [',', []],
+            [null, '2']
+          ]
+        ]);
+      });
+    });
+
+    group('Curve to', () {
+      final parseCurve = definition.build(
+          start: definition.curveTo)
+          .parse;
+
+      test('can parse a single curve', () {
+        expect(parseCurve('C101,102 251,103 252,201').value, [
+          'C',
+          [],
+          [
+            [null, '101'],
+            [',', []],
+            [null, '102'],
+            [[' '], null, []],
+            [[null, '251'], [',', []], [null, '103']],
+            [[' '], null, []],
+            [[null, '252'], [',', []], [null, '201']]
+          ],
+        ]);
+      });
+
+      test('can parse a single curve with fractional values', () {
+        expect(parseCurve('c 1.01,1.02 2.51,1.03 2.52,2.01').value, [
+          'c',
+          [' '],
+          [
+            [null, [['1', '.', '01'], null]],
+            [',', []],
+            [null, [['1', '.', '02'], null]],
+            [[' '], null, []],
+            [
+              [null, [['2', '.', '51'], null]],
+              [',', []],
+              [null, [['1', '.', '03'], null]]
+            ],
+            [[' '], null, []],
+            [
+              [null, [['2', '.', '52'], null]],
+              [',', []],
+              [null, [['2', '.', '01'], null]]
+            ]
+          ]
+        ]);
+      });
+
+      test('can parse a multiple curve values', () {
+        expect(parseCurve('C100,200 500,100 300,400 101,102 251,103 252,201').value, [
+          'C',
+          [],
+          [
+            [null, '100'],
+            [',', []],
+            [null, '200'],
+            [[' '], null, []],
+            [[null, '500'], [',', []], [null, '100']],
+            [[' '], null, []],
+            [[null, '300'], [',', []], [null, '400']],
+            [[' '], null, []],
+            [
+              [null, '101'],
+              [',', []],
+              [null, '102'],
+              [[' '], null, []],
+              [[null, '251'], [',', []], [null, '103']],
+              [[' '], null, []],
+              [[null, '252'], [',', []], [null, '201']]
+            ]
+          ]
+        ]);
+      });
+    });
+
+    group('Smooth curve to', () {
+      final parseSmoothCurve = definition.build(
+          start: definition.smoothCurveTo)
+          .parse;
+
+      test('can parse a single curve', () {
+        expect(parseSmoothCurve('S400,300 400,200').value, [
+          'S',
+          [],
+          [
+            [null, '400'],
+            [',', []],
+            [null, '300'],
+            [[' '], null, []],
+            [[null, '400'], [',', []], [null, '200']]
+          ]
+        ]);
+      });
+
+      test('can parse a single curve with fractional values', () {
+        expect(parseSmoothCurve('s40.1,30.20 40.999,200').value, [
+          's',
+          [],
+          [
+            [null, [['40', '.', '1'], null]],
+            [',', []],
+            [null, [['30', '.', '20'], null]],
+            [[' '], null, []],
+            [[null, [['40', '.', '999'], null]], [',', []], [null, '200']]
+          ]
+        ]);
+      });
+
+      test('can parse a multiple curve values', () {
+        expect(parseSmoothCurve('S400,300 400,200 600,200 600,100').value, [
+          'S',
+          [],
+          [
+            [null, '400'],
+            [',', []],
+            [null, '300'],
+            [[' '], null, []],
+            [[null, '400'], [',', []], [null, '200']],
+            [[' '], null, []],
+            [
+              [null, '600'],
+              [',', []],
+              [null, '200'],
+              [[' '], null, []],
+              [[null, '600'], [',', []], [null, '100']]
+            ]
+          ]
+        ]);
+      });
+    });
+
+    group('Quadratic bezier curve to', () {
+      final parseQuadraticBezierCurve = definition.build(
+          start: definition.quadraticBezierCurveTo)
+          .parse;
+
+      test('can parse a single curve', () {
+        expect(parseQuadraticBezierCurve('Q400,50 600,300').value, [
+          'Q',
+          [],
+          [
+            [null, '400'],
+            [',', []],
+            [null, '50'],
+            [[' '], null, []],
+            [[null, '600'], [',', []], [null, '300']]
+          ]
+        ]);
+      });
+
+      test('can parse a single curve with fractional values', () {
+        expect(parseQuadraticBezierCurve('q400.30,50.1 60.0,30.01').value, [
+          'q',
+          [],
+          [
+            [null, [['400', '.', '30'], null]],
+            [',', []],
+            [null, [['50', '.', '1'], null]],
+            [[' '], null, []],
+            [
+              [null, [['60', '.', '0'], null]],
+              [',', []],
+              [null, [['30', '.', '01'], null]]
+            ]
+          ]
+        ]);
+      });
+
+      test('can parse a multiple curve values', () {
+        expect(parseQuadraticBezierCurve('Q400,50 600,300 300,20 500,100').value, [
+          'Q',
+          [],
+          [
+            [null, '400'],
+            [',', []],
+            [null, '50'],
+            [[' '], null, []],
+            [[null, '600'], [',', []], [null, '300']],
+            [[' '], null, []],
+            [
+              [null, '300'],
+              [',', []],
+              [null, '20'],
+              [[' '], null, []],
+              [[null, '500'], [',', []], [null, '100']]
+            ]
+          ]
+        ]);
+      });
+    });
+
+    group('Smooth quadratic bezier curve to', () {
+      final parseSmoothQuadraticBezierCurve = definition.build(
+          start: definition.smoothQuadraticBezierCurveTo)
+          .parse;
+
+      test('can parse a single curve', () {
+        expect(parseSmoothQuadraticBezierCurve('T400,300').value, [
+          'T',
+          [],
+          [[null, '400'],
+          [',', []],
+          [null, '300']]
+        ]);
+      });
+
+      test('can parse a single curve with fractional values', () {
+        expect(parseSmoothQuadraticBezierCurve('t40.2,30.4').value, [
+          't',
+          [],
+          [
+            [null, [['40', '.', '2'], null]],
+            [',', []],
+            [null, [['30', '.', '4'], null]]
+          ]
+        ]);
+      });
+
+      test('can parse a multiple curve values', () {
+        expect(parseSmoothQuadraticBezierCurve('t400,300 200,100').value, [
+          't',
+          [],
+          [
+            [null, '400'],
+            [',', []],
+            [null, '300'],
+            [[' '], null, []],
+            [[null, '200'], [',', []], [null, '100']]
+          ]
+        ]);
+      });
+    });
+
+    group('Elliptical arc', () {
+      final parseEllipticalArc = definition.build(
+          start: definition.ellipticalArc)
+          .parse;
+
+      test('can parse a single curve', () {
+        expect(parseEllipticalArc('A150,150 0 1,0 150,-150').value, [
+          'A',
+          [],
+          [
+            '150',
+            [',', []],
+            '150',
+            [[' '], null, []],
+            [null, '0'],
+            [[' '], null, []],
+            '1',
+            [',', []],
+            '0',
+            [[' '], null, []],
+            [[null, '150'], [',', []], ['-', '150']]
+          ]
+        ]);
+      });
+
+      test('can parse a single curve with fractional values', () {
+        expect(parseEllipticalArc('a1.50,15.0 0.1 0,1 15.20,-13.10').value, [
+          'a',
+          [],
+          [
+            [['1', '.', '50'], null],
+            [',', []],
+            [['15', '.', '0'], null],
+            [[' '], null, []],
+            [null, [['0', '.', '1'], null]],
+            [[' '], null, []],
+            '0',
+            [',', []],
+            '1',
+            [[' '], null, []],
+            [
+              [null, [['15', '.', '20'], null]],
+              [',', []],
+              ['-', [['13', '.', '10'], null]]
+            ]
+          ]
+        ]);
+      });
+
+      test('can parse a multiple curve values', () {
+        expect(parseEllipticalArc('A150,150 0 1,0 150,-150 120,120 0 0,1 120,-120').value, [
+          'A',
+          [],
+          [
+            '150',
+            [',', []],
+            '150',
+            [[' '], null, []],
+            [null, '0'],
+            [[' '], null, []],
+            '1',
+            [',', []],
+            '0',
+            [[' '], null, []],
+            [[null, '150'], [',', []], ['-', '150']],
+            [[' '], null, []],
+            [
+              '120',
+              [',', []],
+              '120',
+              [[' '], null, []],
+              [null, '0'],
+              [[' '], null, []],
+              '0',
+              [',', []],
+              '1',
+              [[' '], null, []],
+              [[null, '120'], [',', []], ['-', '120']]
+            ]
+          ]
+        ]);
+      });
+    });
+
     group('Draw to', () {
       final parseDraw = definition.build(
           start: definition.drawToCommand)

@@ -83,6 +83,137 @@ class SvgGrammarDefinition extends pp.GrammarDefinition {
           ref(lineToArgumentSequence))
       | coordinatePair();
 
+  /// horizontal-lineto:
+  ///     ( "H" | "h" ) wsp* horizontal-lineto-argument-sequence
+  horizontalLineTo() =>
+      pp.pattern('Hh') & wsp().star() & horizontalLineToArgumentSequence();
+
+  /// horizontal-lineto-argument-sequence:
+  ///     coordinate
+  ///     | coordinate comma-wsp? horizontal-lineto-argument-sequence
+  horizontalLineToArgumentSequence() =>
+      (coordinate() &
+          commaWsp().optional() &
+          ref(horizontalLineToArgumentSequence))
+      | coordinate();
+
+  /// vertical-lineto:
+  ///     ( "V" | "v" ) wsp* vertical-lineto-argument-sequence
+  verticalLineTo() =>
+      pp.pattern('Vv') & wsp().star() & verticalLineToArgumentSequence();
+
+  /// vertical-lineto-argument-sequence:
+  ///     coordinate
+  ///     | coordinate comma-wsp? vertical-lineto-argument-sequence
+  verticalLineToArgumentSequence() =>
+      (coordinate() &
+          commaWsp().optional() &
+          ref(verticalLineToArgumentSequence))
+      | coordinate();
+
+  /// curveto:
+  ///     ( "C" | "c" ) wsp* curveto-argument-sequence
+  curveTo() =>
+      pp.pattern('Cc') & wsp().star() & curveToArgumentSequence();
+
+  /// curveto-argument-sequence:
+  ///     curveto-argument
+  ///     | curveto-argument comma-wsp? curveto-argument-sequence
+  curveToArgumentSequence() =>
+      (curveToArgument() &
+          commaWsp().optional() &
+          ref(curveToArgumentSequence))
+      | curveToArgument();
+
+  /// curveto-argument:
+  ///     coordinate-pair comma-wsp? coordinate-pair comma-wsp? coordinate-pair
+  curveToArgument() =>
+      coordinatePair() & commaWsp().optional() &
+      coordinatePair() & commaWsp().optional() &
+      coordinatePair();
+
+  /// smooth-curveto:
+  ///     ( "S" | "s" ) wsp* smooth-curveto-argument-sequence
+  smoothCurveTo() =>
+      pp.pattern('Ss') & wsp().star() & smoothCurveToArgumentSequence();
+
+  /// smooth-curveto-argument-sequence:
+  ///     smooth-curveto-argument
+  ///     | smooth-curveto-argument comma-wsp? smooth-curveto-argument-sequence
+  smoothCurveToArgumentSequence() =>
+      (smoothCurvetoArgument() &
+          commaWsp().optional() &
+          ref(smoothCurveToArgumentSequence))
+      | smoothCurvetoArgument();
+
+  /// smooth-curveto-argument:
+  ///     coordinate-pair comma-wsp? coordinate-pair
+  smoothCurvetoArgument() =>
+      coordinatePair() & commaWsp().optional() &
+      coordinatePair();
+
+  /// quadratic-bezier-curveto:
+  ///     ( "Q" | "q" ) wsp* quadratic-bezier-curveto-argument-sequence
+  quadraticBezierCurveTo() =>
+      pp.pattern('Qq') & wsp().star() &
+      quadraticBezierCurveToArgumentSequence();
+
+  /// quadratic-bezier-curveto-argument-sequence:
+  ///     quadratic-bezier-curveto-argument
+  ///     | quadratic-bezier-curveto-argument comma-wsp?
+  ///         quadratic-bezier-curveto-argument-sequence
+  quadraticBezierCurveToArgumentSequence() =>
+      (quadraticBezierCurveToArgument() &
+          commaWsp().optional() &
+          ref(quadraticBezierCurveToArgumentSequence))
+      | quadraticBezierCurveToArgument();
+
+  /// quadratic-bezier-curveto-argument:
+  ///     coordinate-pair comma-wsp? coordinate-pair
+  quadraticBezierCurveToArgument() =>
+      coordinatePair() & commaWsp().optional() &
+      coordinatePair();
+
+  /// smooth-quadratic-bezier-curveto:
+  ///     ( "T" | "t" ) wsp* smooth-quadratic-bezier-curveto-argument-sequence
+  smoothQuadraticBezierCurveTo() =>
+      pp.pattern('Tt') & wsp().star() &
+      smoothQuadraticBezierCurveToArgumentSequence();
+
+  /// smooth-quadratic-bezier-curveto-argument-sequence:
+  ///     coordinate-pair
+  ///     | coordinate-pair comma-wsp? smooth-quadratic-bezier-curveto-argument-sequence
+  smoothQuadraticBezierCurveToArgumentSequence() =>
+      (coordinatePair() &
+          commaWsp().optional() &
+          ref(smoothQuadraticBezierCurveToArgumentSequence))
+      | coordinatePair();
+
+  /// elliptical-arc:
+  ///     ( "A" | "a" ) wsp* elliptical-arc-argument-sequence
+  ellipticalArc() =>
+      pp.pattern('Aa') & wsp().star() & ellipticalArcArgumentSequence();
+
+  /// elliptical-arc-argument-sequence:
+  ///     elliptical-arc-argument
+  ///     | elliptical-arc-argument comma-wsp? elliptical-arc-argument-sequence
+  ellipticalArcArgumentSequence() =>
+      (ellipticalArcArgument() &
+          commaWsp().optional() &
+          ref(ellipticalArcArgumentSequence))
+      | ellipticalArcArgument();
+
+  /// elliptical-arc-argument:
+  ///     nonnegative-number comma-wsp? nonnegative-number comma-wsp?
+  ///         number comma-wsp flag comma-wsp? flag comma-wsp? coordinate-pair
+  ellipticalArcArgument() =>
+      nonNegativeNumber() & commaWsp().optional() &
+      nonNegativeNumber() & commaWsp().optional() &
+      number() & commaWsp() &
+      flag() & commaWsp().optional() &
+      flag() & commaWsp().optional() &
+      coordinatePair();
+
   /// coordinate-pair:
   ///     coordinate comma-wsp? coordinate
   coordinatePair() =>
