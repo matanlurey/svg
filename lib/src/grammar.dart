@@ -1,125 +1,162 @@
 library svg.src.grammar;
 
-import 'package:petitparser/petitparser.dart';
+import 'package:petitparser/petitparser.dart' as pp;
 
 /// An implementation of the the [WC3 SVG Path Grammar]
 /// (http://www.w3.org/TR/SVG/paths.html) for Dart.
-class SvgGrammarDefinition extends GrammarDefinition {
+///
+/// The grammar follows the BNF grammar provided in the
+/// [SVG specifications](https://www.w3.org/TR/SVG/paths.html#PathDataBNF).
+class SvgGrammarDefinition extends pp.GrammarDefinition {
   const SvgGrammarDefinition();
 
   @override
   start() => svgPath();
 
-  /// wsp* moveto-drawto-command-groups? wsp*
+  /// svg-path:
+  ///     wsp* moveto-drawto-command-groups? wsp*
   svgPath() =>
-      whitespace().star() &
+      wsp().star() &
       moveToDrawToCommandGroups().optional() &
-      whitespace().star();
+      wsp().star();
 
-  /// moveto-drawto-command-group
-  /// | moveto-drawto-command-group wsp* moveto-drawto-command-groups
+  /// moveto-drawto-command-groups:
+  ///     moveto-drawto-command-group
+  ///     | moveto-drawto-command-group wsp* moveto-drawto-command-groups
   moveToDrawToCommandGroups() =>
       (moveToDrawToCommandGroup() &
-          whitespace().star() &
+          wsp().star() &
           ref(moveToDrawToCommandGroups))
       | moveToDrawToCommandGroup();
 
-  /// moveto wsp* drawto-commands?
+  /// moveto-drawto-command-group:
+  ///     moveto wsp* drawto-commands?
   moveToDrawToCommandGroup() =>
-      moveTo() & commaWhitespace().optional() & drawToCommands();
+      moveTo() & commaWsp().optional() & drawToCommands();
 
-  /// drawto-command
-  /// | drawto-command wsp* drawto-commands
+  /// drawto-commands:
+  ///     drawto-command
+  ///     | drawto-command wsp* drawto-commands
   drawToCommands() =>
-      (drawToCommand() & whitespace().star() & ref(drawToCommands))
+      (drawToCommand() & wsp().star() & ref(drawToCommands))
       | drawToCommand();
 
-  /// closepath
-  /// | lineto
-  /// | horizontal-lineto
-  /// | vertical-lineto
-  /// | curveto
-  /// | smooth-curveto
-  /// | quadratic-bezier-curveto
-  /// | smooth-quadratic-bezier-curveto
-  /// | elliptical-arc
+  /// drawto-command:
+  ///     closepath
+  ///     | lineto
+  ///     | horizontal-lineto
+  ///     | vertical-lineto
+  ///     | curveto
+  ///     | smooth-curveto
+  ///     | quadratic-bezier-curveto
+  ///     | smooth-quadratic-bezier-curveto
+  ///     | elliptical-arc
   drawToCommand() => closePath() | lineTo();
 
-  /// ( "M" | "m" ) wsp* moveto-argument-sequence
-  moveTo() => pattern('Mm') & whitespace().star() & moveToArgumentSequence();
+  /// moveto:
+  ///     ( "M" | "m" ) wsp* moveto-argument-sequence
+  moveTo() => pp.pattern('Mm') & wsp().star() & moveToArgumentSequence();
 
-  /// coordinate-pair
-  /// | coordinate-pair comma-wsp? lineto-argument-sequence
+  /// moveto-argument-sequence:
+  ///     coordinate-pair
+  ///     | coordinate-pair comma-wsp? lineto-argument-sequence
   moveToArgumentSequence() =>
       (coordinatePair() &
-          commaWhitespace().optional() &
+          commaWsp().optional() &
           lineToArgumentSequence())
       | coordinatePair();
 
-  /// ( "Z" | "z" )
-  closePath() => pattern('Zz');
+  /// closepath:
+  ///     ("Z" | "z")
+  closePath() => pp.pattern('Zz');
 
-  /// ( "L" | "l" ) wsp* lineto-argument-sequence
-  lineTo() => pattern('Ll') & whitespace().star() & lineToArgumentSequence();
+  /// lineto:
+  ///     ( "L" | "l" ) wsp* lineto-argument-sequence
+  lineTo() => pp.pattern('Ll') & wsp().star() & lineToArgumentSequence();
 
-  /// coordinate-pair
-  /// | coordinate-pair comma-wsp? lineto-argument-sequence
+  /// lineto-argument-sequence:
+  ///     coordinate-pair
+  ///     | coordinate-pair comma-wsp? lineto-argument-sequence
   lineToArgumentSequence() =>
       (coordinatePair() &
-          commaWhitespace().optional() &
+          commaWsp().optional() &
           ref(lineToArgumentSequence))
       | coordinatePair();
 
-  /// coordinate comma-wsp? coordinate
+  /// coordinate-pair:
+  ///     coordinate comma-wsp? coordinate
   coordinatePair() =>
-      coordinate() & commaWhitespace().optional() & coordinate();
+      coordinate() & commaWsp().optional() & coordinate();
 
-  /// number
+  /// coordinate:
+  ///     number
   coordinate() => number();
 
-  /// integer-constant
-  /// | floating-point-constant
+  /// nonnegative-number:
+  ///     integer-constant
+  ///     | floating-point-constant
   nonNegativeNumber() => floatingPointConstant() | integerConstant();
 
-  /// sign? integer-constant
-  /// | sign? floating-point-constant
+  /// number:
+  ///     sign? integer-constant
+  ///     | sign? floating-point-constant
   number() =>
       sign().optional() & floatingPointConstant()
       | sign().optional() & integerConstant();
 
-  /// "0" | 1
-  flag() => pattern('01');
+  /// flag:
+  ///     "0" | "1"
+  flag() => pp.pattern('01');
 
-  /// (wsp+ comma? wsp*) | (comma wsp*)
-  commaWhitespace() =>
-      (comma() & whitespace().star())
-      | (whitespace().plus() & comma().optional() & whitespace().star());
+  /// comma-wsp:
+  ///     (wsp+ comma? wsp*) | (comma wsp*)
+  commaWsp() =>
+      (comma() & wsp().star())
+      | (wsp().plus() & comma().optional() & wsp().star());
 
-  /// ","
-  comma() => char(',');
+  /// comma:
+  ///     ","
+  comma() => pp.char(',');
 
-  /// digit-sequence
+  /// integer-constant:
+  ///     digit-sequence
   integerConstant() => digitSequence();
 
-  /// fractional-constant exponent?
-  /// | digit-sequence exponent
+  /// floating-point-constant:
+  ///     fractional-constant exponent?
+  ///     | digit-sequence exponent
   floatingPointConstant() =>
       fractionalConstant() & exponent().optional()
       | digitSequence() & exponent();
 
-  /// digit-sequence? "." digit-sequence
-  /// | digit-sequence "."
+  /// fractional-constant:
+  ///     digit-sequence? "." digit-sequence
+  ///     | digit-sequence "."
   fractionalConstant() =>
-      (digitSequence().optional() & char('.') & digitSequence())
-      | (digitSequence() & char('.'));
+      (digitSequence().optional() & pp.char('.') & digitSequence())
+      | (digitSequence() & pp.char('.'));
 
-  /// ( "e" | "E" ) sign? digit-sequence
-  exponent() => pattern('eE') & sign().optional() & digitSequence();
+  /// exponent:
+  ///     ( "e" | "E" ) sign? digit-sequence
+  exponent() => pp.pattern('eE') & sign().optional() & digitSequence();
 
-  /// "+" | "-"
-  sign() => pattern('+-');
+  /// sign:
+  ///     "+" | "-"
+  sign() => pp.pattern('+-');
 
-  /// digit
-  /// | digit digit-sequence
+  /// digit-sequence:
+  ///     digit
+  ///     | digit digit-sequence
   digitSequence() =>  digit().plus().flatten();
+
+  /// digit:
+  ///     "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+  digit() => pp.digit();
+
+  /// wsp:
+  ///    (#x20 | #x9 | #xD | #xA)
+  wsp() =>
+      // Petiteparser whitespace parser is slightly more lenient
+      // than the SVG spec, but that should be all right.
+      pp.whitespace();
 }

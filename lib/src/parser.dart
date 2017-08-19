@@ -74,7 +74,7 @@ class SvgParserDefinition extends SvgGrammarDefinition {
   });
 
   @override
-  commaWhitespace() => super.commaWhitespace().map((_) => null);
+  commaWsp() => super.commaWsp().map((_) => null);
 
   @override
   integerConstant() => super.integerConstant().flatten().map(int.parse);

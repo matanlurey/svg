@@ -84,7 +84,7 @@ void main() {
     });
 
     group('Comma and whitespace', () {
-      final parseCommaWsp = definition.commaWhitespace().parse;
+      final parseCommaWsp = definition.commaWsp().parse;
 
       test('can parse simple case', () {
         expect(parseCommaWsp(' , ').value, [[' '], ',', [' ']]);
