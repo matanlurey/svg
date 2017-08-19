@@ -197,6 +197,34 @@ void main() {
               ]
             ]);
       });
+
+      test('can parse subtraction compact', () {
+        expect(
+          parseMove('M 100-200').value,
+          [
+            'M',
+            [' '],
+            [
+              [null, '100'],
+              null,
+              ['-', '200']
+            ]
+          ]);
+      });
+
+      test('can parse float compact', () {
+        expect(
+            parseMove('M 0.6.5').value,
+            [
+              'M',
+              [' '],
+              [
+                [null, [['0', '.', '6'], null]],
+                null,
+                [null, [[null, '.', '5'], null]]
+              ]
+            ]);
+      });
     });
 
     group('Draw to', () {
