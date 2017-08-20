@@ -28,34 +28,18 @@ class SvgParserDefinition extends SvgGrammarDefinition {
 
   @override
   moveTo() => super.moveTo().map((List result) {
-    // Single move.
-    if (result[2] is Point) {
-      Point point = result[2];
-      return [new SvgPathMoveSegment(point.x, point.y)];
-    }
-
-    // Multiple move.
-    if (result[2] is Iterable) {
-      return (result[2] as Iterable).where((e) => e is Point).map((Point p) {
-        return new SvgPathMoveSegment(p.x, p.y);
-      });
-    }
+    return _argsParser(result[2], 1).map((List args) {
+      Point point = args[0];
+      return new SvgPathMoveSegment(point.x, point.y);
+    });
   });
 
   @override
   lineTo() => super.lineTo().map((List result) {
-    // Single line.
-    if (result[2] is Point) {
-      Point point = result[2];
-      return [new SvgPathLineSegment(point.x, point.y)];
-    }
-
-    // Multiple lines.
-    if (result[2] is Iterable) {
-      return (result[2] as Iterable).where((e) => e is Point).map((Point p) {
-        return new SvgPathLineSegment(p.x, p.y);
-      }).toList(growable: false);
-    }
+    return _argsParser(result[2], 1).map((List args) {
+      Point point = args[0];
+      return new SvgPathLineSegment(point.x, point.y);
+    });
   });
 
   @override
@@ -87,5 +71,25 @@ class SvgParserDefinition extends SvgGrammarDefinition {
   @override
   fractionalConstant() {
     return super.fractionalConstant().flatten().map(double.parse);
+  }
+
+  List _argsParser(seq, num argCount) {
+    Iterable it = seq is Iterable ? seq : [seq];
+
+    var arr = [];
+
+    while (it != null) {
+      arr.add(it.take(argCount).toList(growable: false));
+
+      var next = it.skip(argCount + 1);
+      if (next.isEmpty) {
+        it = null;
+      } else {
+        var seq = next.single;
+        it = seq is Iterable ? seq : [seq];
+      }
+    }
+
+    return arr;
   }
 }
