@@ -8,7 +8,7 @@ import 'package:svg/src/parser.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('SvgParserDefinitiin', () {
+  group('SvgParserDefinition', () {
     final definition = const SvgParserDefinition();
 
     group('Fractional constants', () {
@@ -110,9 +110,10 @@ void main() {
 
       test('can parse multiple line values', () {
         expect(
-            parseLine('l1,1,2,2').value, [
+            parseLine('l1,1,2,2,3,3').value, [
               const SvgPathLineSegment(1, 1),
-              const SvgPathLineSegment(2, 2)
+              const SvgPathLineSegment(2, 2),
+              const SvgPathLineSegment(3, 3)
             ]);
       });
     });
@@ -130,10 +131,11 @@ void main() {
 
       test('can parse followed by additional moves', () {
         expect(
-            parseMove('m0,0,5,5').value,
+            parseMove('m0,0,5,5,10,10').value,
             [
               const SvgPathMoveSegment(0, 0),
-              const SvgPathMoveSegment(5, 5)
+              const SvgPathMoveSegment(5, 5),
+              const SvgPathMoveSegment(10, 10)
             ]);
       });
     });
