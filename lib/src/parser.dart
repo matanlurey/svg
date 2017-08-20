@@ -10,7 +10,10 @@ class SvgParserDefinition extends SvgGrammarDefinition {
   const SvgParserDefinition();
 
   @override
-  svgPath() => super.svgPath().map((Iterable r) => r.toList(growable: false));
+  svgPath() => super.svgPath().map((result) {
+    result = result.map((r) => r.where((p) => p is SvgPathSegment));
+    return result.toList(growable: false);
+  });
 
   @override
   moveToDrawToCommandGroup() => super.moveToDrawToCommandGroup().map((result) {

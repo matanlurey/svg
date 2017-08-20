@@ -218,7 +218,7 @@ void main() {
   });
 
   test('parseSvgPath works as intended', () {
-    expect(svg.parseSvgPath('M0,15,L15,15L7.5,0z'), const [
+    expect(svg.parseSvgPath(' M0,15,L15,15 L 7.5,0z '), const [
       const SvgPathMoveSegment(0, 15),
       const SvgPathLineSegment(15, 15),
       const SvgPathLineSegment(7.5, 0),
