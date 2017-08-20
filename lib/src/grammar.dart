@@ -51,7 +51,11 @@ class SvgGrammarDefinition extends pp.GrammarDefinition {
   ///     | quadratic-bezier-curveto
   ///     | smooth-quadratic-bezier-curveto
   ///     | elliptical-arc
-  drawToCommand() => closePath() | lineTo();
+  drawToCommand() =>
+      closePath() | lineTo() | horizontalLineTo()
+      | verticalLineTo() | curveTo() | smoothCurveTo()
+      | quadraticBezierCurveTo() | smoothQuadraticBezierCurveTo()
+      | ellipticalArc();
 
   /// moveto:
   ///     ( "M" | "m" ) wsp* moveto-argument-sequence
