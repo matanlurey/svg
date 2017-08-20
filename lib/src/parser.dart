@@ -43,6 +43,107 @@ class SvgParserDefinition extends SvgGrammarDefinition {
   });
 
   @override
+  horizontalLineTo() => super.horizontalLineTo().map((List result) {
+    var isRelative = result[0] == 'h';
+
+    return _argsParser(result[2], 1).map((List args) {
+      num x = args[0];
+      return new SvgPathLineSegment(x, null, isRelative: isRelative);
+    });
+  });
+
+  @override
+  verticalLineTo() => super.verticalLineTo().map((List result) {
+    var isRelative = result[0] == 'v';
+
+    return _argsParser(result[2], 1).map((List args) {
+      num y = args[0];
+      return new SvgPathLineSegment(null, y, isRelative: isRelative);
+    });
+  });
+
+  @override
+  curveTo() => super.curveTo().map((List result) {
+    var isRelative = result[0] == 'c';
+
+    return _argsParser(result[2], 5).map((List args) {
+      var c1 = args[0];
+      var c2 = args[2];
+      var point = args[4];
+
+      return new SvgPathCurveCubicSegment(
+          point.x, point.y,
+          c1.x, c1.y,
+          c2.x, c2.y,
+          isRelative: isRelative);
+    });
+  });
+
+  @override
+  smoothCurveTo() => super.smoothCurveTo().map((List result) {
+    var isRelative = result[0] == 's';
+
+    return _argsParser(result[2], 3).map((List args) {
+      var c2 = args[0];
+      var point = args[2];
+
+      return new SvgPathCurveCubicSegment(
+          point.x, point.y,
+          null, null,
+          c2.x, c2.y,
+          isRelative: isRelative);
+    });
+  });
+
+  @override
+  quadraticBezierCurveTo() => super.quadraticBezierCurveTo().map((List result) {
+    var isRelative = result[0] == 'q';
+
+    return _argsParser(result[2], 3).map((List args) {
+      var c1 = args[0];
+      var point = args[2];
+
+      return new SvgPathCurveQuadraticSegment(
+          point.x, point.y,
+          c1.x, c1.y,
+          isRelative: isRelative);
+    });
+  });
+
+  @override
+  smoothQuadraticBezierCurveTo() => super.smoothQuadraticBezierCurveTo().map((List result) {
+    var isRelative = result[0] == 't';
+
+    return _argsParser(result[2], 1).map((List args) {
+      var point = args[0];
+
+      return new SvgPathCurveQuadraticSegment(
+          point.x, point.y,
+          null, null,
+          isRelative: isRelative);
+    });
+  });
+
+  @override
+  ellipticalArc() => super.ellipticalArc().map((List result) {
+    var isRelative = result[0] == 'a';
+
+    return _argsParser(result[2], 11).map((List args) {
+      num r1 = args[0];
+      num r2 = args[2];
+      num angle = args[4];
+      bool isLargeArc = args[6];
+      bool isSweep = args[8];
+      Point point = args[10];
+
+      return new SvgPathArcSegment(point.x, point.y, r1, r2, angle,
+          isLargeArc: isLargeArc,
+          isSweep: isSweep,
+          isRelative: isRelative);
+    });
+  });
+
+  @override
   coordinatePair() => super.coordinatePair().map((result) {
     return new Point(result[0], result[2]);
   });
@@ -56,6 +157,9 @@ class SvgParserDefinition extends SvgGrammarDefinition {
     }
     return number;
   });
+
+  @override
+  flag() => super.flag().map((v) => v == '1');
 
   @override
   commaWsp() => super.commaWsp().map((_) => null);

@@ -105,6 +105,9 @@ class SvgPathCurveQuadraticSegment extends SvgPathPositionSegment {
       bool isRelative: false})
           : super(x, y, SvgPathSegmentType.CurveTo, isRelative: isRelative);
 
+  /// Whether there is no control point (a smooth curve)
+  bool get isSmooth => x1 == null && y1 == null;
+
   @override
   bool operator==(o) {
     if (o is! SvgPathCurveQuadraticSegment) return false;
@@ -117,7 +120,7 @@ class SvgPathCurveQuadraticSegment extends SvgPathPositionSegment {
   }
 
   @override
-  String toString() => 'SvgPathCurveCubicSegment ' + {
+  String toString() => 'SvgPathCurveQuadraticSegment ' + {
     'x': x,
     'y': y,
     'x1': x1,
@@ -186,7 +189,7 @@ class SvgPathArcSegment extends SvgPathPositionSegment {
   /// The value of the sweep-flag parameter.
   final bool isSweep;
 
-  SvgPathArcSegment(
+  const SvgPathArcSegment(
       num x,
       num y,
       this.r1,

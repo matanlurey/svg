@@ -49,5 +49,5 @@ svgPathToSource('M0,15,L15,15L7.5,0z')
 Currently supported
 ---
 
-- Parsing a single SVG path that contains move, line, and close commands.
+- Parsing a single SVG spec compatible path.
 - Converting a single SVG path to raw Dart (generated) code.
